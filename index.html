@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Happy 17th Birthday po Love! 🎂✨</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cormorant Garamond, Nunito, and Caveat for handwritten notes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-cream: #fdfaf6;
+      --card-bg: #fffefe;
+      --rose-accent: #d65a7f;
+      --rose-deep: #8a2745;
+      --rose-light: #feeaf0;
+      --text-main: #3d2730;
+      --text-muted: #785a66;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-main);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .font-serif-soft {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Subtle background grid pattern to mimic soft stationery */
+    .bg-paper-pattern {
+      background-color: #fdfaf6;
+      background-image: 
+        radial-gradient(#f0d8df 0.75px, transparent 0.75px), 
+        radial-gradient(#f7e5eb 0.75px, #fdfaf6 0.75px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+
+    /* Lined paper texture for the letter */
+    .lined-paper {
+      background: #fffdfa;
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 27px,
+        rgba(214, 90, 127, 0.12) 28px
+      );
+      line-height: 28px;
+    }
+
+    /* Soft organic card shadow */
+    .warm-shadow {
+      box-shadow: 0 4px 20px -2px rgba(138, 39, 69, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+    .warm-shadow-lg {
+      box-shadow: 0 12px 32px -4px rgba(138, 39, 69, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Envelope Styles */
+    .envelope-box {
+      perspective: 800px;
+    }
+
+    .envelope-flap {
+      border-left: 140px solid transparent;
+      border-right: 140px solid transparent;
+      border-top: 95px solid #f68da9;
+      transform-origin: top center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .envelope-box.is-open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-pocket {
+      border-left: 140px solid #f27696;
+      border-right: 140px solid #f27696;
+      border-bottom: 95px solid #e25e81;
+      border-top: 80px solid transparent;
+    }
+
+    .envelope-paper {
+      transition: transform 0.7s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .envelope-box.is-open .envelope-paper {
+      transform: translateY(-90px);
+    }
+
+    /* Screen view transitions */
+    .screen-view {
+      display: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    .screen-view.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Accordion collapsible content */
+    .expandable-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease, margin-top 0.3s ease;
+      opacity: 0;
+    }
+
+    .expandable-content.is-expanded {
+      max-height: 400px;
+      opacity: 1;
+      margin-top: 14px;
+    }
+
+    /* Gentle pulsing heart */
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .pulse-soft {
+      animation: gentlePulse 2.2s infinite ease-in-out;
+    }
+
+    /* Floating subtle petals */
+    .floating-petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.65;
+      animation: fallDown linear infinite;
+    }
+
+    @keyframes fallDown {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="bg-paper-pattern min-h-screen flex flex-col justify-between relative selection:bg-rose-200 selection:text-rose-900 pb-12">
+
+  <!-- Ambient Floating Heart Petals Container -->
+  <div id="petalsContainer" aria-hidden="true"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="w-full max-w-md mx-auto pt-6 px-5 flex items-center justify-between z-20">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+      <span class="text-xs uppercase tracking-widest text-[#8a2745] font-semibold">17th Birthday of my baby</span>
+    </div>
+    <div id="stepCounter" class="hidden text-[11px] font-bold text-[#8a2745] bg-[#feeaf0] px-2.5 py-1 rounded-full border border-rose-200">
+      Part <span id="currentStep">1</span> of 5
+    </div>
+  </header>
+
+  <!-- Main Multi-step Content Area -->
+  <main class="w-full max-w-md mx-auto px-5 py-4 flex-1 flex flex-col justify-center relative z-10">
+
+    <!-- ==========================================
+         SCREEN 0: INTRO / ENVELOPE
+         ========================================== -->
+    <div id="screen-0" class="screen-view active text-center py-6">
+      <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold mb-4 border border-rose-200">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-rose-500"></i>
+        <span>Kapag iniskip mo mga parts dito magtatampo ako</span>
+      </div>
+
+      <h1 class="font-serif-soft text-3xl sm:text-4xl font-bold text-[#3d2730] leading-tight mb-2">
+        Happy Birthday po love! 🎂✨
+      </h1>
+      <p class="text-sm text-[#785a66] mb-8 font-normal">
+        Mga bagay na gusto ko sabihin sayo.
+      </p>
+
+      <!-- The Pink Interactive Envelope -->
+      <div class="envelope-box relative w-[280px] h-[190px] mx-auto cursor-pointer select-none" id="loveEnvelope" onclick="openEnvelope()">
+        <!-- Back of Envelope -->
+        <div class="absolute inset-0 bg-[#e5678a] rounded-2xl warm-shadow-lg"></div>
+
+        <!-- Pull-out Paper Note Inside -->
+        <div class="envelope-paper absolute inset-x-3.5 top-3 bottom-3 bg-[#fffcf7] rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-sm border border-rose-100 z-10 pointer-events-none">
+          <i data-lucide="heart" class="w-6 h-6 text-rose-500 fill-rose-400 pulse-soft mb-1"></i>
+          <p class="font-serif-soft font-bold text-base text-[#3d2730]">To my Future Wife</p>
+          <p class="text-[11px] text-[#8a2745] font-semibold mt-0.5">Buksan mo po hihi 💌</p>
+        </div>
+
+        <!-- Bottom/Side Pockets -->
+        <div class="envelope-pocket absolute inset-0 rounded-b-2xl z-20 pointer-events-none"></div>
+
+        <!-- Top Triangular Flap -->
+        <div class="envelope-flap absolute top-0 left-0 right-0 z-30 pointer-events-none"></div>
+
+        <!-- Wax Seal Stamp -->
+        <div id="envelopeSeal" class="absolute top-[75px] left-1/2 -translate-x-1/2 z-40 bg-[#be254f] text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md border-2 border-rose-200/50 transition-all">
+          <i data-lucide="heart" class="w-5 h-5 fill-white"></i>
+        </div>
+      </div>
+
+      <p class="text-xs text-[#8a2745] mt-8 font-medium animate-bounce flex items-center justify-center gap-1">
+        <span>Pindutin mo po</span>
+        <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+      </p>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 1: 3 THINGS ABOUT PERSONALITY
+         ========================================== -->
+    <div id="screen-1" class="screen-view py-2">
+      <div class="text-center mb-6">
+        <span class="font-handwriting text-2xl text-rose-500 block -rotate-1">things I love about you</span>
+        <h2 class="font-serif-soft text-2xl sm:text-3xl font-bold text-[#3d2730]">Your Personality ✨</h2>
+        <p class="text-xs text-[#785a66] mt-1">Tatlong bagay na ugali mo na gustong gusto ko.</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Card 1: Your Voice -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="mic" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Voice</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “You know love, everytime na pagod ako gustong gusto ko naririnig boses mo, bawat araw araw na kasama ka, I always imagine hearing your voice yapping about what’s happening in your life po.”
+          </div>
+        </div>
+
+        <!-- Card 2: Your Smile -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="smile" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Smile</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “One of my favorite is yung smile mo, the way you smile makes me kilig talaga that’s why want kitang patawanin everytime na magkausap tayo kasi I love how you smile talaga.”
+          </div>
+        </div>
+
+        <!-- Card 3: Your Style -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="sparkle" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Style</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “You know, nung una pa lang naattract ako sa panunuot mo dahil may resemblance of japanese style, and now I really love na nag uupdate ka na di ako nag aask while kasama outfit mo. Magkaiba ang cute at maganda pero pinagsama mo, kaya everytime na nakikita ko suot mo, it always bring me back to the first time I see you nan aka uniform kasi bagay na bagay sayo and lagi ko non tinitignan.”
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-end">
+        <button onclick="goToScreen(2)" class="w-full sm:w-auto px-7 py-3 bg-[#d65a7f] hover:bg-[#c04b6f] text-white rounded-xl font-semibold text-sm warm-shadow flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <span>Next</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 2: 3 THINGS ABOUT CHARACTERISTICS
+         ========================================== -->
+    <div id="screen-2" class="screen-view py-2">
+      <div class="text-center mb-6">
+        <span class="font-handwriting text-2xl text-rose-500 block -rotate-1">what makes you special</span>
+        <h2 class="font-serif-soft text-2xl sm:text-3xl font-bold text-[#3d2730]">Your Characteristics 🌸</h2>
+        <p class="text-xs text-[#785a66] mt-1">Mga bagay na gustong gusto ko sayo hihi.</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Card 1: Humor -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="laugh" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Humor</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “Eto talaga ang pinaka favorite ko since napaka attractive na nakakasabay ka sa humor ko that time kasi you as bata pa lang I didn’t expect na magkakavibe tayo, then now I love you and gusto ko parin.”
+          </div>
+        </div>
+
+        <!-- Card 2: Mindset -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Mindset</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “I didn’t expect na you’re matured enough na para makasabay saken. It is one of my favorite kasi yun talaga standard ko, no matter what age basta teachable and mababa ang pride, kaya hoping na yung mindset mo is di magbago at Magaya sa generation ngayon.”
+          </div>
+        </div>
+
+        <!-- Card 3: Resilience -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100/80 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base text-[#3d2730]">Your Resilience</h3>
+              </div>
+            </div>
+            <button onclick="toggleCard(this)" class="px-3 py-1.5 rounded-full bg-[#feeaf0] text-[#8a2745] text-xs font-semibold hover:bg-rose-200 transition-colors flex items-center gap-1 active:scale-95">
+              <span>click me</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"></i>
+            </button>
+          </div>
+          <div class="expandable-content border-t border-dashed border-rose-100 pt-3 text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3">
+            “Tulad ng sabi ko dati kung paano kita I describe is ganon talaga. I love na on your age is napaka tatag mong tao kahit na alam kong iyakin ka, I understand na you still gonna do it, I am so proud of you mylove.”
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex items-center justify-between gap-3">
+        <button onclick="goToScreen(1)" class="px-5 py-3 border border-rose-200 rounded-xl text-xs font-semibold text-[#785a66] hover:bg-rose-50 transition-colors">
+          Back
+        </button>
+        <button onclick="goToScreen(3)" class="flex-1 px-7 py-3 bg-[#d65a7f] hover:bg-[#c04b6f] text-white rounded-xl font-semibold text-sm warm-shadow flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <span>Next</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 3: 3 SONGS OFFERED
+         ========================================== -->
+    <div id="screen-3" class="screen-view py-2">
+      <div class="text-center mb-6">
+        <span class="font-handwriting text-2xl text-rose-500 block -rotate-1">Kanta na inaalay ko sayo</span>
+        <h2 class="font-serif-soft text-2xl sm:text-3xl font-bold text-[#3d2730]">3 Songs I Offer For You 🎵</h2>
+        <p class="text-xs text-[#785a66] mt-1">Bawat kanta may part don na para sayo.</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Song 1: Mahal ang magmahal -->
+        <a href="https://youtu.be/8hJJ2l8UaxQ?si=PUx3QHtQB7HMWbeS" target="_blank" rel="noopener noreferrer" class="block group bg-[#fffefe] rounded-2xl p-3.5 warm-shadow border border-rose-100/90 hover:border-rose-300 transition-all active:scale-[0.99]">
+          <div class="flex gap-3.5 items-center">
+            <div class="relative w-20 h-20 rounded-xl overflow-hidden bg-rose-100 flex-shrink-0 shadow-inner">
+              <img src="https://img.youtube.com/vi/8hJJ2l8UaxQ/hqdefault.jpg" alt="Mahal ang magmahal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <div class="absolute inset-0 bg-black/25 flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-white/90 text-rose-600 flex items-center justify-center shadow">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-rose-600 ml-0.5"></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-rose-500 bg-rose-50 px-2 py-0.5 rounded">First Song</span>
+              </div>
+              <h3 class="font-bold text-sm text-[#3d2730] mt-1 truncate">Mahal ang magmahal</h3>
+              <p class="text-xs text-[#8a2745] font-serif-soft italic mt-1 leading-snug">
+                “sana wag moko iwan dahil lang di ko pa mabigay mga bagay na gusto ko bigay sayo”
+              </p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Song 2: Mine -->
+        <a href="https://youtu.be/oxNLRqMJMZk?si=1XVRz9-wEJUmJdGB" target="_blank" rel="noopener noreferrer" class="block group bg-[#fffefe] rounded-2xl p-3.5 warm-shadow border border-rose-100/90 hover:border-rose-300 transition-all active:scale-[0.99]">
+          <div class="flex gap-3.5 items-center">
+            <div class="relative w-20 h-20 rounded-xl overflow-hidden bg-rose-100 flex-shrink-0 shadow-inner">
+              <img src="https://img.youtube.com/vi/oxNLRqMJMZk/hqdefault.jpg" alt="Mine Taylor Swift" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <div class="absolute inset-0 bg-black/25 flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-white/90 text-rose-600 flex items-center justify-center shadow">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-rose-600 ml-0.5"></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-rose-500 bg-rose-50 px-2 py-0.5 rounded">Second Song</span>
+              </div>
+              <h3 class="font-bold text-sm text-[#3d2730] mt-1 truncate">Mine</h3>
+              <p class="text-xs text-[#8a2745] font-serif-soft italic mt-1 leading-snug">
+                “You are the best thing that’s ever been mine – Taylor”
+              </p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Song 3: Dito Sa'kin -->
+        <a href="https://youtu.be/K0ns6T8vaws?si=XUHtywfwt16BLLSU" target="_blank" rel="noopener noreferrer" class="block group bg-[#fffefe] rounded-2xl p-3.5 warm-shadow border border-rose-100/90 hover:border-rose-300 transition-all active:scale-[0.99]">
+          <div class="flex gap-3.5 items-center">
+            <div class="relative w-20 h-20 rounded-xl overflow-hidden bg-rose-100 flex-shrink-0 shadow-inner">
+              <img src="https://img.youtube.com/vi/K0ns6T8vaws/hqdefault.jpg" alt="Dito Sa'kin Earl Agustin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <div class="absolute inset-0 bg-black/25 flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-white/90 text-rose-600 flex items-center justify-center shadow">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-rose-600 ml-0.5"></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-rose-500 bg-rose-50 px-2 py-0.5 rounded">Third Song</span>
+              </div>
+              <h3 class="font-bold text-sm text-[#3d2730] mt-1 truncate">Dito Sa'kin</h3>
+              <p class="text-xs text-[#8a2745] font-serif-soft italic mt-1 leading-snug">
+                “Di ka mahirap mahalin – Earl Agustin”
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="mt-8 flex items-center justify-between gap-3">
+        <button onclick="goToScreen(2)" class="px-5 py-3 border border-rose-200 rounded-xl text-xs font-semibold text-[#785a66] hover:bg-rose-50 transition-colors">
+          Back
+        </button>
+        <button onclick="goToScreen(4)" class="flex-1 px-7 py-3 bg-[#d65a7f] hover:bg-[#c04b6f] text-white rounded-xl font-semibold text-sm warm-shadow flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <span>Next</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 4: PAST, PRESENT, FUTURE
+         ========================================== -->
+    <div id="screen-4" class="screen-view py-2">
+      <div class="text-center mb-6">
+        <span class="font-handwriting text-2xl text-rose-500 block -rotate-1">our journey together</span>
+        <h2 class="font-serif-soft text-2xl sm:text-3xl font-bold text-[#3d2730]">Past, Present & Future ⏳</h2>
+        <p class="text-xs text-[#785a66] mt-1">Kung saan tayo galing, nasaan tayo, at saan patungo.</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Past -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-stone-100 text-stone-600 text-[11px] font-bold uppercase tracking-wider">Past</span>
+            <h3 class="font-bold text-sm text-[#3d2730]">Past is Past</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3 border border-rose-50">
+            “Alam ko po mabigat ang nangyari sa past mo at sa past ko and now as someone na we are exploring each other, I hope na kalimutan napo natin at mag focus napo tayo ulit sa paraan na we can make each other happy and comfortable po.”
+          </p>
+        </div>
+
+        <!-- Present -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-700 text-[11px] font-bold uppercase tracking-wider">Present</span>
+            <h3 class="font-bold text-sm text-[#3d2730]">Learn each other</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3 border border-rose-50">
+            “I know na may times na nahihirapan tayo intindihin isat’ isa pero sana wag ka sumuko at di rin ako susuko sayo, naniniwala ako na mas maganda pa na patawarin natin isa’t isa sa pagkakamali kesa humanap ng bago at magsimula ulit.”
+          </p>
+        </div>
+
+        <!-- Future -->
+        <div class="bg-[#fffefe] rounded-2xl p-4 warm-shadow border border-rose-100">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[11px] font-bold uppercase tracking-wider">Future</span>
+            <h3 class="font-bold text-sm text-[#3d2730]">Make Everything Happens</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-[#5a3a46] leading-relaxed bg-[#fffdfa] rounded-xl p-3 border border-rose-50">
+            “Sa future, I make sure na mapapatunayan ko na kaya kitang mahalin at sana kapag magkasama na tayo, bigyan mo sana ako ng pagkakataon na mahalin ka sa paraan na gusto ko, sa paraan na alam ko na sasaya ka saken.”
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex items-center justify-between gap-3">
+        <button onclick="goToScreen(3)" class="px-5 py-3 border border-rose-200 rounded-xl text-xs font-semibold text-[#785a66] hover:bg-rose-50 transition-colors">
+          Back
+        </button>
+        <button onclick="goToScreen(5)" class="flex-1 px-7 py-3 bg-[#d65a7f] hover:bg-[#c04b6f] text-white rounded-xl font-semibold text-sm warm-shadow flex items-center justify-center gap-2 active:scale-98 transition-all">
+          <span>Next</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 5: ARE YOU READY? CHECKPOINT
+         ========================================== -->
+    <div id="screen-5" class="screen-view py-6 text-center">
+      <div class="w-14 h-14 mx-auto rounded-full bg-rose-100 text-rose-500 flex items-center justify-center mb-4">
+        <i data-lucide="heart-handshake" class="w-7 h-7"></i>
+      </div>
+
+      <span class="font-handwriting text-3xl text-rose-500 block mb-1">Lastly....</span>
+      <h2 class="font-serif-soft text-3xl sm:text-4xl font-bold text-[#3d2730] mb-3">
+        Sana po mabasa mo ito ng buo at makita lahat
+      </h2>
+      <p class="text-sm text-[#785a66] max-w-xs mx-auto mb-8">
+        Please be patient po ah.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-xs mx-auto">
+        <button onclick="handleNoReady()" class="w-full py-3.5 px-6 rounded-xl border border-rose-300 text-rose-800 font-semibold text-sm hover:bg-rose-50 transition-all active:scale-95">
+          No
+        </button>
+        <button onclick="handleYesReady()" class="w-full py-3.5 px-6 rounded-xl bg-[#d65a7f] hover:bg-[#c04b6f] text-white font-semibold text-sm warm-shadow transition-all active:scale-95 flex items-center justify-center gap-2">
+          <span>Yes po!</span>
+          <i data-lucide="heart" class="w-4 h-4 fill-white"></i>
+        </button>
+      </div>
+
+      <!-- Playful Modal if She Clicks "No" -->
+      <div id="noModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-5 hidden">
+        <div class="bg-white rounded-3xl p-6 text-center max-w-xs w-full warm-shadow-lg border border-rose-100 animate-in fade-in zoom-in-95 duration-200">
+          <div class="text-4xl mb-2">🥺💔</div>
+          <h3 class="font-serif-soft text-2xl font-bold text-rose-900 mb-2">Ayaw mo naba saken?</h3>
+          <p class="text-xs text-stone-600 mb-6 leading-relaxed">
+            Ay ganon nag no ka? wag na wag na, no more whimpers na
+          </p>
+          <button onclick="closeNoModalAndProceed()" class="w-full py-3 bg-[#d65a7f] text-white rounded-xl text-xs font-bold warm-shadow active:scale-95 transition-all">
+            Joke lang baby 💕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 6: THE LONG LETTER & 9:47 VIDEO
+         ========================================== -->
+    <div id="screen-6" class="screen-view py-2">
+      <!-- Letter Header Badge -->
+      <div class="text-center mb-5">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold uppercase tracking-wider mb-2">
+          <i data-lucide="mail-heart" class="w-3.5 h-3.5"></i>
+          <span>From My Whole Heart</span>
+        </span>
+        <h2 class="font-serif-soft text-2xl sm:text-3xl font-bold text-[#3d2730]">
+          My Long First Letter for my beautiful wife
+        </h2>
+      </div>
+
+      <!-- Letter Body Container with realistic paper feel -->
+      <article class="lined-paper rounded-2xl p-5 sm:p-7 warm-shadow-lg border border-rose-200/70 text-[#3d2730] relative overflow-hidden mb-8">
+        <!-- Decorative corner wax seal stamp -->
+        <div class="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-rose-100 border border-rose-300 flex items-center justify-center opacity-70 pointer-events-none rotate-12">
+          <i data-lucide="heart" class="w-5 h-5 text-rose-500 fill-rose-300"></i>
+        </div>
+
+        <p class="text-sm font-semibold text-rose-900 mb-4">
+          Dearest Love,
+        </p>
+
+        <div class="text-xs sm:text-[13px] leading-[28px] text-[#422d35] space-y-4">
+          <p>
+            hi po love, alam ko nasaktan kita dahil nga sa isang babae nayon, sana bigyan mo ng time na makabawi ako at maayos natin ng relationship natin together. Alam ko wala pa tayong label and nasaktan ako nung ayaw mo pal ana pinagsasabi ko na mag partner/gf tayo pero gusto ko nalang na intindihin side mo.
+          </p>
+          <p>
+            May mga oras na sobrang busy ko pero believe mo po ah na iniisip kita kahit sa simpleng bagay tulad ng pagcocode or even before matulog, kaya sana maintindihan mo na kahit busy ako, mahal parin kita at nag iisip ng paraan para mabigyan ka ng oras at sana wag moko icompare sa ibang lalake na kaya magbigay ng oras kahit busy sila.
+          </p>
+          <p>
+            Alam ko lagi ko sinasabi na baka pagpalit moko, pasensya na kasi takot ako, takot ako na kulang ang pagmamahal na nabibigay ko, may Nakita akong repost mo na parang it shows na kulang po pagmamahal ko, alam ko po kulang kaya pasensya na dahil minsan di ko alam kung paano. Bigyan mo sana ako ng oras para intindihin ka dahil pinagaaralan po kita kahit di mo itanong or kahit di mo pansin.
+          </p>
+          <p>
+            Minsan nasasaktan ako kapag nadadamay ako kung ano mood mo, di ko naman macontrol kasi emotion mo po yon, pero sana po kapag stress ka pwede ka naman po mag vent out saken pero wag naman po sa paraan na maapektohan yung mood ng paguusap mo saken directly. Takot ako na baka isipin mo na minamanipulate po kita dahil sa mga nangyayare or baka isipin mo na gumagawa ako ng dahilan na di tayo mag usap kasi nirarason ko ay busy ako, minsan di naman po dahil lang sa academics, minsan po kasi marami po akong responsibility sa bahay at sa minsan outside nito, kaya sana wag mo po ako pagdudahan.
+          </p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-rose-200/70 text-right">
+          <p class="font-serif-soft text-lg sm:text-xl font-bold text-rose-900">
+            “Mahal na mahal po kita and Happy 17th birthday po baby ko”
+          </p>
+          <span class="font-handwriting text-xl text-rose-600 block mt-1">ikaw hangang sa pag tanda kung ayaw mo ako unang mamamatay hehe</span>
+        </div>
+      </article>
+
+      <!-- ==========================================
+           SPECIAL VIDEO PLAYER (Google Drive Embed)
+           ========================================== -->
+      <section class="bg-[#fffefe] rounded-2xl p-4 sm:p-5 warm-shadow border border-rose-100">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="film" class="w-4 h-4 text-rose-500"></i>
+            <h3 class="font-bold text-sm text-[#3d2730]">Special Video na para sayo lang</h3>
+          </div>
+          <span class="px-2 py-0.5 rounded-full bg-rose-100 text-[#8a2745] font-mono text-xs font-bold">
+            9:47 mins
+          </span>
+        </div>
+
+        <!-- Embedded Google Drive Video Frame -->
+        <div class="relative w-full aspect-video rounded-xl bg-black overflow-hidden shadow-inner border border-rose-100">
+          <iframe 
+            src="https://drive.google.com/file/d/1QKYI0yZWJuSEepfivm85a9rrHKSYW1br/preview" 
+            class="w-full h-full border-0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <!-- Mobile fallback link -->
+        <div class="mt-3 text-center">
+          <a 
+            href="https://drive.google.com/file/d/1QKYI0yZWJuSEepfivm85a9rrHKSYW1br/view?usp=sharing" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="inline-flex items-center gap-1.5 text-xs text-[#8a2745] hover:text-[#d65a7f] font-semibold underline decoration-rose-300 underline-offset-4">
+            <span>Buksan directly sa Google Drive kung mabagal mag-load</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+
+        <p class="text-[11px] text-center text-rose-800/70 mt-2 italic">
+          (Sobrang gulo po pasensya na)
+        </p>
+      </section>
+
+      <!-- Back to start button -->
+      <div class="mt-8 text-center pb-6">
+        <button onclick="goToScreen(0)" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-100/80 hover:bg-rose-200 text-rose-900 text-xs font-bold transition-all">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Read from start 💌</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Script logic -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    /* =========================================================
+       1. SCREEN NAVIGATION & PROGRESS STATE
+       ========================================================= */
+    let currentScreen = 0;
+    const totalScreens = 6;
+
+    function goToScreen(index) {
+      if (index < 0 || index > totalScreens) return;
+
+      document.querySelectorAll('.screen-view').forEach(screen => {
+        screen.classList.remove('active');
+      });
+
+      const nextScreen = document.getElementById(`screen-${index}`);
+      if (nextScreen) {
+        nextScreen.classList.add('active');
+      }
+
+      currentScreen = index;
+
+      // Update Header Indicator
+      const stepCounter = document.getElementById('stepCounter');
+      const currentStepSpan = document.getElementById('currentStep');
+
+      if (index === 0) {
+        stepCounter.classList.add('hidden');
+      } else {
+        stepCounter.classList.remove('hidden');
+        currentStepSpan.textContent = index <= 5 ? index : 'Final';
+      }
+
+      // Smooth scroll back to top of container
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =========================================================
+       2. ENVELOPE OPENING INTERACTION (SCREEN 0)
+       ========================================================= */
+    function openEnvelope() {
+      const envelope = document.getElementById('loveEnvelope');
+      if (envelope.classList.contains('is-open')) return;
+
+      envelope.classList.add('is-open');
+
+      // Trigger soft celebratory confetti
+      if (window.confetti) {
+        confetti({
+          particleCount: 35,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ['#f43f5e', '#fb7185', '#ffe4e6', '#d65a7f']
+        });
+      }
+
+      // Automatically advance to Step 1 after envelope opens
+      setTimeout(() => {
+        goToScreen(1);
+      }, 950);
+    }
+
+    /* =========================================================
+       3. ACCORDION / EXPANDABLE PERSONALITY & CHAR CARDS
+       ========================================================= */
+    function toggleCard(btn) {
+      const card = btn.closest('.bg-\\[\\#fffefe\\]');
+      const content = card.querySelector('.expandable-content');
+      const chevron = btn.querySelector('[data-lucide="chevron-down"]');
+      const isExpanded = content.classList.contains('is-expanded');
+
+      if (isExpanded) {
+        content.classList.remove('is-expanded');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        btn.querySelector('span').textContent = 'click me';
+      } else {
+        content.classList.add('is-expanded');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        btn.querySelector('span').textContent = 'close';
+      }
+    }
+
+    /* ==========================================
+       4. SCREEN 5: "ARE YOU READY?" INTERACTIONS
+       ========================================== */
+    function handleNoReady() {
+      const modal = document.getElementById('noModal');
+      modal.classList.remove('hidden');
+    }
+
+    function closeNoModalAndProceed() {
+      const modal = document.getElementById('noModal');
+      modal.classList.add('hidden');
+      handleYesReady();
+    }
+
+    function handleYesReady() {
+      if (window.confetti) {
+        confetti({
+          particleCount: 65,
+          spread: 70,
+          origin: { y: 0.55 },
+          colors: ['#e11d48', '#fda4af', '#f43f5e']
+        });
+      }
+      goToScreen(6);
+    }
+
+    /* =========================================================
+       5. FLOATING BACKGROUND PETALS GENERATOR
+       ========================================================= */
+    const petalsContainer = document.getElementById('petalsContainer');
+    const petalChars = ['🌸', '✨', '🤍', '💖', '🌷'];
+
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.className = 'floating-petal text-xs sm:text-sm select-none';
+      petal.textContent = petalChars[Math.floor(Math.random() * petalChars.length)];
+      petal.style.left = Math.random() * 95 + 'vw';
+      petal.style.animationDuration = (Math.random() * 5 + 6) + 's';
+      petal.style.fontSize = (Math.random() * 10 + 10) + 'px';
+
+      petalsContainer.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 11000);
+    }
+
+    // Spawn a gentle petal every 1.5 seconds
+    setInterval(createPetal, 1500);
+  </script>
+</body>
+</html>
